@@ -1,0 +1,48 @@
+# Go into” /lustre/haven/courses/EPP622-2018Fa/nduan1”
+$ ssh nduan1@duo.acf.tennessee.edu
+$ cd /lustre/haven/courses/EPP622-2018Fa/nduan1
+
+# Create directories 
+$ mkdir nifa_project 
+$ cd nifa_project 
+$ mkdir analysis
+
+# Open new window and upload raw_data to ACF
+$ scp –r raw_datanduan1@duo.acf.tennessee.edu:/lustre/haven/courses/EPP622- 2018Fa/nduan1/nifa_project
+
+# Load and run fastqc function(FastQC v0.11.5)
+$ module load fastqc
+$ fastqc -t 2 -o . ../raw_data/
+
+# Load and run Mothur function(Linux 64Bit Version, Mothur version=1.39.5, Release Date=3/20/2017)
+$ module load Mothur
+$ Mothur
+
+# then go into the Mothur terminal and execute Mothur commands according to Miseq SOP
+mothur >make.contigs(file=ning16s.file,oligos=oligo.file,processors=8,pdiffs=2)
+mothur >summary.seqs(fasta=ning16s.trim.contigs.fasta,processors=16)
+mothur >screen.seqs(fasta=ning16s.trim.contigs.fasta,group=ning16s.contigs.groups,summary=ning16s.trim.contigs.summary,processors=16,maxambig=0,maxlength=450)
+mothur > summary.seqs(fasta=ning16s.trim.contigs.good.fasta,processors=16)
+mothur > unique.seqs(fasta=ning16s.trim.contigs.good.fasta)
+mothur > count.seqs(name=ning16s.trim.contigs.good.names,group=ning16s.contigs.good.groups)
+mothur > summary.seqs(fasta=ning16s.trim.contigs.good.unique.fasta,count=ning16s.trim.contigs.good.count_table,processors=16)
+mothur > align.seqs(fasta=ning16s.trim.contigs.good.unique.fasta,reference=silva_V3_V4,processors=16)
+mothur > summary.seqs(fasta=ning16s.trim.contigs.good.unique.align,count=ning16s.trim.contigs.good.count_table,processors=16)
+mothur > screen.seqs(fasta=ning16s.trim.contigs.good.unique.align,count=ning16s.trim.contigs.good.count_table, summary=ning16s.trim.contigs.good.unique.summary,start=200,end=17212,maxhomop=8,processors=16)
+mothur > summary.seqs(fasta=current,count=current)
+mothur > filter.seqs(fasta=ning16s.trim.contigs.good.unique.good.align, vertical=T, trump=.)
+mothur > unique.seqs(fasta=ning16s.trim.contigs.good.unique.good.filter.fasta, count=ning16s.trim.contigs.good.good.count_table)
+mothur > pre.cluster(fasta=ning16s.trim.contigs.good.unique.good.filter.unique.fasta, count=ning16s.trim.contigs.good.unique.good.filter.count_table,diffs=4,processors=16)
+mothur > chimera.vsearch(fasta=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.count_table, dereplicate=t,processors=16)
+mothur > remove.seqs(fasta=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.fasta, accnos=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.accnos)
+mothur > summary.seqs(fasta=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table)
+mothur > classify.seqs(fasta=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, reference=trainset9_032012.pds.fasta, taxonomy=trainset9_032012.pds.tax, cutoff=80)
+mothur > remove.lineage(fasta=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.fasta, count=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table,taxonomy=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.taxonomy, taxon=Chloroplast;-Mitochondria;-unknown;-Archaea;-Eukaryota;)
+mothur > summary.tax(taxonomy=current, count=current)
+mothur > cluster.split(fasta=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.fasta, count=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, taxonomy=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy,splitmethod=classify,taxlevel=4,cutoff=0.03,processors=16)
+mothur > make.shared(list=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list, count=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table, label=0.03)
+mothur > classify.otu(list=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.list, count=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table,taxonomy=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.taxonomy, label=0.03)
+mothur > count.groups(shared=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared)
+mothur > sub.sample(shared=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared, size=19210)
+mothur > dist.shared(shared=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.shared, calc=thetayc-jclass, subsample=19210)
+mothur > tree.shared(phylip=ning16s.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.opti_mcc.thetayc.0.03.lt.ave.dist)

@@ -1,0 +1,9 @@
+
+#organize your file name like this and save them for the Mothur first step use (e.g. save as"Ning16s.file". Also put both this file and your raw data in the same location in Mothur file.
+
+F3D0	F3D0_S188_L001_R1_001.fastq	F3D0_S188_L001_R2_001.fastq
+F3D141	F3D141_S207_L001_R1_001.fastq	F3D141_S207_L001_R2_001.fastq
+F3D142	F3D142_S208_L001_R1_001.fastq	F3D142_S208_L001_R2_001.fastq
+F3D143	F3D143_S209_L001_R1_001.fastq	F3D143_S209_L001_R2_001.fastq
+F3D144	F3D144_S210_L001_R1_001.fastq	F3D144_S210_L001_R2_001.fastq
+...
